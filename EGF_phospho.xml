@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding = "UTF-8"?>
+<Run name="" description="" type="LFQ" file="Phospho (STY)Sites.txt" suffix = 'Intensity ' spec = 'Phospho'>
+
+<Design description="">
+
+
+
+<Condition name = "WT" type="control" description="" id="1">
+		<Replicate name="WT_biolrep1" type="biological" description="" inverted="False" supergroup="1"></Replicate>
+		<Replicate name="WT_biolrep2" type="biological" description="" inverted="False" supergroup="2"></Replicate>
+		<Replicate name="WT_biolrep3" type="biological" description="" inverted="False" supergroup="3"></Replicate>
+</Condition>
+
+<Condition name = "Mutant" type="treatment" description="" id="2">
+		<Replicate name="Mutant_biolrep1" type="biological" description="" inverted="False" supergroup="1"></Replicate>
+		<Replicate name="Mutant_biolrep2" type="biological" description="" inverted="False" supergroup="2"></Replicate>
+		<Replicate name="Mutant_biolrep3" type="biological" description="" inverted="False" supergroup="3"></Replicate>
+</Condition>
+
+
+
+###Define the Ratios to be Taken
+--These should always be of the form des="Condition Name1|Condition Name2"
+<Ratios>
+<Ratio des="Mutant|WT"></Ratio>
+</Ratios>
+
+###Define the Global Filters
+--Global filters are filters that affect rows based on a specific value
+<filter subtype="global" ftype="contaminants" function="" threshold="None" headers="Leading proteins"></filter>
+<filter subtype="global" ftype="reverse" function="" threshold="None" headers="Leading proteins"></filter>
+
+###Define the Conditional Filters
+--Conditional filters are filters that affect rows based on several values
+<filter subtype="conditional" ftype="filterZerosToNans" function="zeros_to_nans" threshold="None" headers=""></filter>
+<filter subtype="conditional" ftype="filter_replicates_by_group" function="collapse_zeros" threshold="5" headers=""></filter>
+<filter subtype="conditional" ftype="filter_absent_conditions" function="collapse_zeros" threshold="1" headers=""></filter>
+
+
+df = self.filter_absent_conditions(df,3,'collapse_on_value')
+
+###Define Columns to Append
+<PastedHeader name="multiplicity"></PastedHeader>
+<PastedHeader name="Leading proteins"></PastedHeader>
+<PastedHeader name="Number of Phospho (STY)"></PastedHeader>
+<PastedHeader name="Phospho (STY) Probabilities"></PastedHeader>
+<PastedHeader name="Sequence window"></PastedHeader>
+<PastedHeader name="Amino acid"></PastedHeader>
+<PastedHeader name="Positions"></PastedHeader>
+
+
+
+
+###Define a Normalization Scheme (Currently, quantile normalization is all that's available)
+--scope indicates whether to apply normalizations across all conditions or across each condition
+<normalization type="quantile" scope="condition"></normalization>
+
+###Run a statistical test
+<Tests>
+<test type="paired_ttest" Control="WT" Treatment="Mutant"></test>
+<test type="wmann_paired" Control="WT" Treatment="Mutant"></test>
+</Tests>
+
+###Attempt to append gene names
+<appendGenes val="True"></appendGenes>
+
+
+
+</Design>
+</Run>
+
+
+
+
